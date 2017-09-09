@@ -1,0 +1,7 @@
+version: '2'
+
+services:
+  myservice:
+    image: spugachev/tests:1.0
+    ports:
+      - 4000:3000
