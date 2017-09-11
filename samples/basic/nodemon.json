@@ -1,0 +1,6 @@
+{
+    "watch": ["static", "src"],
+    "ext": "ts",
+    "ignore": ["dist/**/*.d.ts", "dist/**/*.js.map"],
+    "exec": "npm run build && node ./dist/app.js"
+  }
