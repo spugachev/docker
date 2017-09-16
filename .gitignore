@@ -8,6 +8,12 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# Vagrant
+.vagrant/
+
+# Log files
+*.logs
+
 # Runtime data
 pids
 *.pid
