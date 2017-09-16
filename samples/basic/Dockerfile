@@ -1,6 +1,6 @@
 FROM node:8-alpine				
 
-MAINTAINER spugachev
+LABEL maintainer="spugachev@gmail.com"
 ENV PORT 3000
 ENV APP_DIR /var/www/app/
 
