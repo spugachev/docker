@@ -1,8 +1,15 @@
-FROM node:8				
+FROM node:8-alpine				
 
-EXPOSE 3000			
-ADD . /app			
-WORKDIR app			
-RUN npm install		
+MAINTAINER spugachev
+ENV PORT 3000
+ENV APP_DIR /var/www/app/
 
+ADD . $APP_DIR			
+WORKDIR $APP_DIR	
+		
+RUN npm install	
+RUN npm run build	
+RUN npm prune --production
+
+EXPOSE $PORT
 CMD ["npm", "run", "prod"]

@@ -1,7 +1,10 @@
-version: '2'
+version: '3'
 
 services:
-  myservice:
-    image: spugachev/tests:2.0
+  webapp:
+    image: spugachev/webtest:2.0
     ports:
-      - 4000:3000
+      - 3000:3000
+    deploy:
+      mode: replicated
+      replicas: 3
