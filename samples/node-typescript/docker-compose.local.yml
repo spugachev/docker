@@ -2,7 +2,7 @@ version: '3'
 
 services:
   webapp:
-    image: spugachev/webtest:2.0
+    image: reg.corp.spugachev.com/webtest:latest
     build: .
     ports:
       - 1001:3000

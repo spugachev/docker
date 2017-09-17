@@ -8,10 +8,10 @@ docker run -d -p 3000:3000 --restart=always spugachev/webtest
 docker swarm init --advertise-addr 192.168.1.10
 docker node ls
 
-docker stack deploy --compose-file=docker-compose.yml webapp
+docker stack deploy --compose-file=docker-compose.local.yml myapp
 docker service ls
-docker service ps webapp_webapp
-docker service scale webapp_webapp=3
+docker service ps myapp
+docker service scale myapp_webapp=3
 
 docker node update --label-add myrole=prod srv1
 docker node update --label-add myrole=prod srv2
