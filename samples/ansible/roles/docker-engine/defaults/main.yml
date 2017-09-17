@@ -1,0 +1,29 @@
+---
+
+## Select the Docker variant from one of the following:
+## 
+## - `enterprise` (n/a): Docker EE version
+## - `stable`: Docker CE stable version
+## - `edge` (n/a): Docker CE edge version
+## - `cloud` (n/a): Docker Cloud version
+## 
+## See: https://docs.docker.com/engine/installation/#docker-variants
+## 
+## Default: `stable`
+docker_variant: stable
+
+## Manage Docker as a non-root user?
+##
+## Warning: The docker group grants privileges equivalent to the root user. For
+##          details on how this impacts security in your system.
+##     See: https://docs.docker.com/engine/security/security/#docker-daemon-attack-surface
+docker_manage_as_nonroot: true
+
+## Select the method for installing docker
+## Could be:
+## - repository
+## - package (n/a)
+##
+## Default: repository
+docker_install_method: repository
+

@@ -1,0 +1,10 @@
+---
+- debug: var=hostvars['default']
+
+- name: Install Docker on {{ansible_distribution}}
+  include: install_{{ansible_distribution}}.yml
+# when: "ansible_os_family == 'Debian'"
+
+- name: Post-Install to configure Docker on {{ansible_system}}
+  include: postinstall_{{ansible_system}}.yml
+

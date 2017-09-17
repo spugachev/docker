@@ -1,0 +1,28 @@
+---
+#ssh-keygen -t rsa -b 4096 -C "spugachev@gmail.com" -f authorized_keys.spugachev
+
+- name: Make sure we have a 'corpusers' group
+  group:
+    name: corpusers
+    state: present
+
+- name: Allow 'corpusers' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%corpusers'
+    line: '%corpusers ALL=(ALL) NOPASSWD: ALL'
+
+# ---------------------------------------------
+
+- name: Create user 'spugachev'
+  user: name=spugachev groups=corpusers append=yes state=present createhome=yes
+
+- name: Set up authorized keys for 'spugachev'
+  authorized_key: user=spugachev key="{{ lookup('file', '../files/authorized_keys.spugachev.pub') }}"
+
+- name: Creates .ssh directory for spugachev
+  file: path=/home/spugachev/.ssh/ state=directory
+
+- name: Copy id_rsa for spugachev
+  copy: src=authorized_keys.spugachev dest='/home/spugachev/.ssh/id_rsa' owner=spugachev mode=0600

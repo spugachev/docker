@@ -1,0 +1,16 @@
+---
+- name: apt-get update
+  apt:
+    #upgrade: dist
+    update_cache: yes
+ 
+- name: Generate "/etc/hosts.ansible" file
+  template: "src=hosts.j2 dest='/etc/hosts' owner=root group=root mode=0644"
+
+- name: Ensure "/data" directory exists
+  file: path=/data state=directory
+
+- include: utils.yml
+- include: node.yml
+- include: users.yml
+

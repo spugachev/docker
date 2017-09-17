@@ -1,0 +1,22 @@
+---
+# openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -subj "/C=US/ST=San Francisco/L=San Francisco/O=WonderWeb/CN=reg.corp.spugachev.com" -keyout /reg/certs/ca.key -out /reg/certs/ca.crt
+
+- name: Creates SSL directory
+  file: path=/etc/nginx/ssl/ state=directory
+
+- name: Copy nginx.crt
+  copy: src=nginx.crt dest='/etc/nginx/ssl/nginx.crt' owner=root group=root mode=0644
+
+- name: Copy nginx.key
+  copy: src=nginx.key dest='/etc/nginx/ssl/nginx.key' owner=root group=root mode=0644
+
+- name: Copy "reg.corp.spugachev.com.crt" file
+  copy: src=reg.corp.spugachev.com.crt dest='/etc/nginx/ssl/reg.corp.spugachev.com.crt' owner=root group=root mode=0644
+
+- name: Copy "reg.corp.spugachev.com.key" file
+  copy: src=reg.corp.spugachev.com.key dest='/etc/nginx/ssl/reg.corp.spugachev.com.key' owner=root group=root mode=0644
+
+- name: Copy "/etc/nginx/nginx.conf" file
+  copy: src=nginx.conf dest='/etc/nginx/nginx.conf' owner=root group=root mode=0644
+  notify: 
+  - restart nginx

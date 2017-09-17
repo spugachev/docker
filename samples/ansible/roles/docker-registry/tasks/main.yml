@@ -1,0 +1,53 @@
+---
+# openssl req -x509 -nodes -days 3650 -newkey rsa:2048 -subj "/C=US/ST=San Francisco/L=San Francisco/O=SergeyPugachev/CN=reg.corp.spugachev.com" -keyout /data/registry/certs/ca.key -out /data/registry/certs/ca.crt
+
+- name: Ensure "/data/registry" directory exists
+  file: path=/data/registry state=directory
+
+- name: Ensure "/data/registry/data" directory exists
+  file: path=/data/registry/data state=directory
+
+- name: Ensure "/data/registry/auth" directory exists
+  file: path=/data/registry/auth state=directory
+
+- name: Ensure "/data/registry/certs" directory exists
+  file: path=/data/registry/certs state=directory
+
+- name: Ensure "/data/registry/docker-compose.yml" file exists
+  copy: src=docker-compose.yml dest='/data/registry/docker-compose.yml' owner=root group=root mode=0644
+
+- name: Get status of "/data/registry/certs/reg.corp.spugachev.com.key"
+  stat: path=/data/registry/certs/reg.corp.spugachev.com.key
+  register: registry_cert
+
+- name: Ensure "reg.corp.spugachev.com.crt" file exists
+  copy: src=reg.corp.spugachev.com.crt dest='/data/registry/certs/reg.corp.spugachev.com.crt' owner=root group=root mode=0644
+
+- name: Ensure "reg.corp.spugachev.com.key" file exists
+  copy: src=reg.corp.spugachev.com.key dest='/data/registry/certs/reg.corp.spugachev.com.key' owner=root group=root mode=0644
+
+- name: Ensure Docker registry certificate exists
+  copy: src=/data/registry/certs/reg.corp.spugachev.com.crt dest=/usr/local/share/ca-certificates/reg.corp.spugachev.com.crt
+  when: not registry_cert.stat.exists
+
+- name: Update trusted ca
+  shell: /usr/sbin/update-ca-certificates
+  when: not registry_cert.stat.exists
+
+- name: Get status of "/data/registry/auth/htpasswd"
+  stat: path=/data/registry/auth/htpasswd
+  register: registry_htpasswd
+
+# ---------------------------------------------
+- name: Create Docker registry user "spugachev"
+  shell: docker run --entrypoint htpasswd registry:2 -Bbn spugachev yYhUXH4zkLfXBTTZ >> /data/registry/auth/htpasswd
+  when: not registry_htpasswd.stat.exists
+# ---------------------------------------------
+
+- name: Run Docker registry
+  shell: "docker-compose -f /data/registry/docker-compose.yml up -d"
+  register: docker_up_reg
+  changed_when: docker_up_reg.stdout_lines
+
+
+

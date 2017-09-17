@@ -1,3 +1,7 @@
+# Node & TypeScript Docker App Sample
+# docker build -t spugachev/webtest .
+# docker run -d -p 3000:3000 --restart=always --name webapp spugachev/webtest
+
 FROM node:8-alpine				
 
 LABEL maintainer="spugachev@gmail.com"

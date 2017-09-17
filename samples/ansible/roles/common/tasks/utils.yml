@@ -1,0 +1,27 @@
+---
+- name: Ensure tree is installed
+  apt:
+    name: tree
+    state: latest
+
+- name: Ensure git is installed
+  apt:
+    name: git
+    state: latest
+
+- name: Ensure build-essential is installed
+  apt:
+    name: build-essential
+    state: latest
+
+- name: Ensure software-properties-common is installed
+  apt:
+    name: software-properties-common
+    state: latest
+
+- name: Ensure python-pycurl is installed
+  apt: 
+    name: python-pycurl
+    state: latest
+
+

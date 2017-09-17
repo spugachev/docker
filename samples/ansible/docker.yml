@@ -1,0 +1,50 @@
+---
+
+- name: Install Docker
+  hosts: docker_servers
+  roles:
+    - docker-engine
+    - docker-compose
+  become: true
+  become_method: sudo
+  become_user: root
+
+- name: Configure "daemon.json" file
+  hosts: docker_servers
+  tasks:
+    - name: Generate "/etc/docker/daemon.json" file
+      copy: src=daemon.json dest='/etc/docker/daemon.json' owner=root group=root mode=0644
+      notify: 
+      - Restart Docker service
+  handlers:
+    - name: Restart Docker service
+      service: name=docker state=restarted 
+  become: true
+  become_method: sudo
+  become_user: root 
+
+- name: Add users to Docker group
+  hosts: docker_servers
+  tasks:
+    - name: Add spugachev group to docker group
+      user: name='spugachev' groups=docker append=yes
+  become: true
+  become_method: sudo
+  become_user: root
+
+- name: Install private Docker Registry
+  hosts: docker_registry
+  roles:
+    - docker-registry
+  become: true
+  become_method: sudo
+  become_user: root 
+
+- name: Provision Docker Swarm Cluster
+  hosts: all
+  roles:
+    - docker-swarm
+  become: true
+  become_method: sudo
+  become_user: root
+

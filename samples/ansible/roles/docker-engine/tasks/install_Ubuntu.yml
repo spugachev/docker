@@ -1,0 +1,94 @@
+---
+## https://docs.docker.com/engine/installation/linux/ubuntu/
+
+- fail: msg="Docker can only be install on 64-bit version of Ubuntu."
+  when: "ansible_architecture != 'x86_64'"
+
+- name: Update the apt package index
+  apt: update_cache=yes
+  become: yes
+
+- name: Install extra packages for Trusty
+  apt: state=present name={{item}}
+  become: yes
+  with_items:
+    - linux-image-extra-{{ansible_kernel}}
+    - linux-image-extra-virtual
+  when: "ansible_distribution_release == 'trusty'"
+
+- block:
+
+  - name: Install packages to allow apt to use a repository over HTTPS
+    apt: state=present name={{item}}
+    become: yes
+    with_items:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+
+  # TASK [jeffhung.docker : Add Docker’s official GPG key] *************************
+  # fatal: [default]: FAILED! => {"changed": false, "failed": true, "msg":
+  # "Failed to validate the SSL certificate for download.docker.com:443. Make
+  # sure your managed systems have a valid CA certificate installed. If the
+  # website serving the url uses SNI you need python >= 2.7.9 on your managed
+  # machine or you can install the `urllib3`, `pyopenssl`, `ndg-httpsclient`,
+  # and `pyasn1` python modules to perform SNI verification in python >= 2.6.
+  # You can use validate_certs=False if you do not need to confirm the servers
+  # identity but this is unsafe and not recommended. Paths checked for this
+  # platform: /etc/ssl/certs, /etc/pki/ca-trust/extracted/pem,
+  # /etc/pki/tls/certs, /usr/share/ca-certificates/cacert.org, /etc/ansible"}
+  - block:
+
+    # The default python version in Trusty is 2.7.6 which is less than 2.7.9.
+    # Since we have no intention change Python version, we shall install these
+    # python package instead: urllib3, pyopenssl, ndg-httpsclient, pyasn1.
+
+    - name: Enable HTTPS/SNI in Ansible (trusty)
+      apt: state=present name={{item}}
+      become: yes
+      with_items:
+        - python-urllib3
+        - python-openssl
+#       - ndg-httpsclient
+        - python-pyasn1
+
+    # Trusty has no ndg-httpsclient package available in APT.
+    # Install via PIP instead.
+
+    - name: Install python-pip (trusty)
+      apt: state=present name=python-pip
+      become: yes
+
+    - name: Install ndg-httpsclient (trusty)
+      pip: state=present name=ndg-httpsclient
+      become: yes
+
+    when: "ansible_distribution_release == 'trusty'"
+
+  - name: Add Docker’s official GPG key
+    apt_key:
+      url: "https://download.docker.com/linux/ubuntu/gpg"
+      state: present
+      validate_certs: no
+    become: yes
+
+  - name: Set up the stable repository
+    apt_repository:
+      repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ansible_distribution_release}} stable"
+      state: present
+    become: yes
+
+# - name: Update the apt package index
+#   apt: update_cache=yes
+#   become: yes
+
+  - name: Install Docker Engine
+    apt: state=present name=docker-ce
+    become: yes
+
+  when: "docker_install_method == 'repository'"
+
+
+# when: "ansible_os_family == 'Debian'"
+

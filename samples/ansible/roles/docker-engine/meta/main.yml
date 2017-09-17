@@ -1,0 +1,21 @@
+galaxy_info:
+  author: jeffhung
+  description: Ansible playbook to use Docker CE on CentOS/Ubuntu Linux.
+  license: BSD
+
+  platforms:
+# - name: EL
+#   versions:
+#    - 6
+#    - 7
+  - name: Ubuntu
+    versions:
+     - trusty
+#    - xenial
+#    - yakkety
+
+  galaxy_tags:
+    - system
+
+dependencies: []
+

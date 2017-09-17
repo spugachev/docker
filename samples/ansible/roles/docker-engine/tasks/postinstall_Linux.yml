@@ -1,0 +1,14 @@
+---
+
+- block:
+
+  - name: Create the docker group
+    group: state=present name=docker
+    become: yes
+
+  - name: Add the user to the docker group
+    user: append=yes name={{ansible_user_id}} groups=docker
+    become: yes
+
+  when: "docker_manage_as_nonroot|bool"
+
