@@ -7,6 +7,7 @@ const app: express.Application = express();
 app.use(express.static(__dirname + '/../static'));
 
 app.get('/api', function (req, res) {
+    console.log(`Request form IP: ${req.ip}`);
     res.send(`<h1>Hello, clusters!</h1><h2>${os.hostname()}</h2>`);
 });
 

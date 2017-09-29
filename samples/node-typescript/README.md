@@ -1,27 +1,36 @@
 ```bash
+docker login
+docker build -t reg.corp.spugachev.com/webtest:latest .
+docker push reg.corp.spugachev.com/webtest:latest
+docker push spugachev/webtest
 #--------------------------
 docker build -t spugachev/webtest .
-docker login
-docker push spugachev/webtest
 docker run -d -p 3000:3000 --restart=always spugachev/webtest
 #--------------------------
 docker swarm init --advertise-addr 192.168.1.10
 docker node ls
 
-docker build -t reg.corp.spugachev.com/webtest:latest .
-docker push reg.corp.spugachev.com/webtest:latest
-
-docker stack deploy --with-registry-auth --compose-file=docker-compose.local.yml myapp
-docker service ls
-docker service ps myapp
-docker service scale myapp_webapp=3
-
 docker node update --label-add myrole=prod srv1
 docker node update --label-add myrole=prod srv2
 docker node update --label-add myrole=dev srv3
 docker node inspect srv1
-docker service create --name nginx --replicas 3 --constraint 'node.labels.myrole == dev' nginx
 
+# docker stack deploy --with-registry-auth --compose-file=docker-compose.yml myapp
+docker stack deploy --compose-file=docker-compose.yml myapp
+
+docker service ls
+docker service ps myapp
+docker service scale myapp_webapp=3
+
+docker service logs myapp_webapp
+
+# /run/secrets/<secret_name>
+docker secret create my_secret_data secret.txt
+docker secret ls
+
+docker plugin ls
+#--------------------------
+docker service create --name nginx --replicas 3 --constraint 'node.labels.myrole == dev' nginx
 docker network create -d overlay test_net 
 docker network inspect test_net
 #--------------------------

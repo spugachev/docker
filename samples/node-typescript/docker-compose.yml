@@ -3,12 +3,24 @@ version: '3.3'
 services:
   db:
     image: mysql
-      environment:
-        MYSQL_ROOT_PASSWORD: password
+    environment:
+      MYSQL_ROOT_PASSWORD: password
   webapp:
-    image: spugachev/webtest:3.0
+    image: spugachev/webtest:1.0
     ports:
       - 1001:3000
+    secrets:
+      - my_secret
     deploy:
       mode: replicated
       replicas: 3
+      placement:
+        constraints:
+          - node.labels.myrole == prod    
+      update_config:
+        parallelism: 1
+        delay: 3s
+
+secrets:
+  my_secret:
+    file: ./secret.txt
