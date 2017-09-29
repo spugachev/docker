@@ -7,7 +7,7 @@ const app: express.Application = express();
 app.use(express.static(__dirname + '/../static'));
 
 app.get('/api', function (req, res) {
-    res.send(`<h1>${os.hostname()}</h1>`);
+    res.send(`<h1>Hello, clusters!</h1><h2>${os.hostname()}</h2>`);
 });
 
 app.listen(port, () => {

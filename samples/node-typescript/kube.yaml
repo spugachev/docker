@@ -1,6 +1,7 @@
 # kubectl create --save-config -f kube.yaml
 # kubectl apply -f kube.yaml
 # kubectl delete -f kube.yaml
+
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
