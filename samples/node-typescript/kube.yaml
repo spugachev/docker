@@ -1,24 +1,8 @@
+# https://kubernetes.io/docs/user-guide/kubectl-cheatsheet/
 # kubectl create --save-config -f kube.yaml
 # kubectl apply -f kube.yaml
 # kubectl delete -f kube.yaml
 
-apiVersion: apps/v1beta1
-kind: Deployment
-metadata:
-  name: webtest-deployment
-spec:
-  replicas: 3
-  template:
-    metadata:
-      labels:
-        app: webtest
-    spec:
-      containers:
-      - name: webtest
-        image: spugachev/webtest
-        ports:
-        - containerPort: 3000
----
 apiVersion: v1
 kind: Service
 metadata:
@@ -31,3 +15,57 @@ spec:
     nodePort: 30081
   selector:
     app: webtest
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  ports:
+  - port: 3306
+  selector:
+    app: mysql
+  clusterIP: None
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: webtest-deployment
+spec:
+  replicas: 3
+  minReadySeconds: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: webtest
+    spec:
+      containers:
+      - name: webtest
+        image: spugachev/webtest:2.0
+        ports:
+        - containerPort: 3000
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - image: mysql:5.6
+        name: mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: password
+        ports:
+        - containerPort: 3306
+          name: mysql
