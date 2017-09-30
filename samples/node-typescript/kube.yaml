@@ -1,8 +1,3 @@
-# https://kubernetes.io/docs/user-guide/kubectl-cheatsheet/
-# kubectl create --save-config -f kube.yaml
-# kubectl apply -f kube.yaml
-# kubectl delete -f kube.yaml
-
 apiVersion: v1
 kind: Service
 metadata:
