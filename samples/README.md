@@ -9,7 +9,7 @@ kubectl delete -f kube.yaml
 
 # Swarm
 
-[Dokcer Cheat Sheet](https://duckduckgo.com/?q=docker+cheatsheet&t=ipad&ia=cheatsheet&iax=1)
+[Docker Cheat Sheet](https://duckduckgo.com/?q=docker+cheatsheet&t=ipad&ia=cheatsheet&iax=1)
 
 ## Registry
 
